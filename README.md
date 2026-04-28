@@ -7,71 +7,84 @@
 
 ## Architecture & Services Flow
 
-AtmosDB SDK follows an Arduino-style microcontroller architecture, where the SDK acts as the central "board" connecting to various "shields" (Cloudflare services) through standardized "pins" (APIs).
+AtmosDB follows a layered architecture design, providing a unified interface to Cloudflare's edge services through a clean, modular SDK structure.
 
 ```mermaid
 graph TB
-    %% Arduino-style Board Layout
-    subgraph "AtmosDB Microcontroller Board"
-        direction TB
-        Power[⚡ Power: Hono Framework] --> CPU[🧠 CPU: Atmos Core Engine]
-        CPU --> Pins[Pins: Unified API Interface]
-
-        %% Pin Headers (like Arduino pins)
-        Pins --> DigitalPins[Digital Pins<br/>CRUD Operations]
-        Pins --> AnalogPins[Analog Pins<br/>Semantic Search]
-        Pins --> PWMPins[PWM Pins<br/>File Storage]
-        Pins --> SerialPins[Serial Pins<br/>Authentication]
+    %% Application Layer
+    subgraph "Application Layer"
+        direction LR
+        App[Your Application<br/>Hono Routes]
+        SDK[Atmos SDK<br/>Unified API]
     end
 
-    %% Shield Connections (like Arduino shields)
-    DigitalPins -->|D1_PIN| D1Shield[D1 Database Shield<br/>SQL Operations]
-    AnalogPins -->|VEC_PIN| VectorizeShield[Vectorize Shield<br/>Vector Search]
-    PWMPins -->|R2_PIN| R2Shield[R2 Storage Shield<br/>File Operations]
-    SerialPins -->|AUTH_PIN| AuthShield[Auth Shield<br/>Security & JWT]
+    %% SDK Core Layer
+    subgraph "Atmos SDK Core"
+        direction TB
+        Core[AtmosCore<br/>Main Engine]
+        Components[SDK Components]
 
-    %% Additional Modules (like Arduino modules)
-    CPU -->|I2C_BUS| AIShield[Workers AI Shield<br/>Embeddings Engine]
-    AIShield -->|VECTOR_OUT| VectorizeShield
+        Components --> DB[AtmosDB<br/>D1 Interface]
+        Components --> Vector[AtmosVector<br/>Vectorize Interface]
+        Components --> Storage[AtmosStorage<br/>R2 Interface]
+        Components --> Auth[AtmosAuth<br/>Authentication]
+        Components --> Embedder[AtmosEmbedder<br/>AI Processing]
+    end
 
-    CPU -->|SPI_BUS| MiddlewareShield[Middleware Shield<br/>Rate Limiting & CORS]
+    %% Service Layer
+    subgraph "Cloudflare Edge Services"
+        direction LR
+        D1[(D1 Database<br/>SQLite)]
+        Vec[[Vectorize<br/>HNSW Index]]
+        R2{R2 Storage<br/>S3-compatible}
+        AI[/Workers AI<br/>Transformers/]
+    end
 
-    %% External Connections
-    D1Shield -->|(SQLite)| Cloudflare[(Cloudflare Edge<br/>Network)]
-    VectorizeShield -->|(HNSW)| Cloudflare
-    R2Shield -->|(S3-compatible)| Cloudflare
-    AIShield -->|(Transformers)| Cloudflare
+    %% Data Flow
+    App -->|HTTP Requests| SDK
+    SDK -->|Unified API Calls| Core
+    Core -->|SQL Queries| DB
+    Core -->|Vector Operations| Vector
+    Core -->|File Operations| Storage
+    Core -->|Auth Operations| Auth
+    Core -->|Embeddings| Embedder
 
-    %% Power and Ground
-    Power -->|+5V| AllShields[All Shields Powered]
-    Ground[GND: Error Handling] --> CPU
+    DB -->|Data| D1
+    Vector -->|Vectors| Vec
+    Storage -->|Files| R2
+    Embedder -->|AI Processing| AI
 
-    %% Styling - Arduino color scheme
-    style CPU fill:#ff6b35,stroke:#333,stroke-width:3px
-    style Pins fill:#f7c59f,stroke:#333,stroke-width:2px
-    style D1Shield fill:#4ecdc4,stroke:#333
-    style VectorizeShield fill:#45b7d1,stroke:#333
-    style R2Shield fill:#96ceb4,stroke:#333
-    style AIShield fill:#ffeaa7,stroke:#333
-    style AuthShield fill:#dda0dd,stroke:#333
-    style MiddlewareShield fill:#98d8c8,stroke:#333
-    style Cloudflare fill:#f7dc6f,stroke:#333,stroke-dasharray: 5 5
+    %% Auto-embedding flow
+    Embedder -.->|Auto-embed| Vector
 
-    %% Arduino-style labels
-    classDef arduinoLabel font-family:monospace,font-size:10px
-    class DigitalPins,AnalogPins,PWMPins,SerialPins arduinoLabel
+    %% Styling
+    style App fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    style SDK fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style Core fill:#fff3e0,stroke:#f57c00,stroke-width:3px
+    style Components fill:#e8f5e8,stroke:#2e7d32
+    style D1 fill:#e3f2fd,stroke:#1976d2
+    style Vec fill:#f3e5f5,stroke:#7b1fa2
+    style R2 fill:#fff3e0,stroke:#f57c00
+    style AI fill:#e8f5e8,stroke:#2e7d32
+
+    classDef serviceLabel font-family:Arial,font-size:11px,text-align:center
+    class DB,Vector,Storage,Auth,Embedder serviceLabel
 ```
 
-### Arduino-Style Component Mapping
+### Architecture Layers
 
-| Arduino Pin Type | Cloudflare Service | SDK Component | Purpose |
-|------------------|-------------------|---------------|---------|
-| **Digital Pins** | D1 Database | `AtmosDB` | CRUD operations, SQL queries |
-| **Analog Pins** | Vectorize | `AtmosVector` | Semantic search, vector similarity |
-| **PWM Pins** | R2 Storage | `AtmosStorage` | File upload/download, binary data |
-| **Serial Pins** | Workers KV/Auth | `AtmosAuth` | Authentication, sessions, JWT |
-| **I2C Bus** | Workers AI | `AtmosEmbedder` | Text embeddings, AI processing |
-| **SPI Bus** | Middleware | Rate Limiting | Request throttling, CORS |
+| Layer | Purpose | Components |
+|-------|---------|------------|
+| **Application Layer** | Your app logic | Hono routes, business logic |
+| **SDK Core Layer** | Unified interfaces | AtmosDB, AtmosVector, AtmosStorage, AtmosAuth, AtmosEmbedder |
+| **Service Layer** | Cloudflare services | D1 Database, Vectorize, R2 Storage, Workers AI |
+
+### Data Flow Patterns
+
+- **CRUD Operations**: `HTTP Request → AtmosDB → D1 Database → Response`
+- **Semantic Search**: `Text Input → AtmosEmbedder → Workers AI → Vectorize → Results`
+- **File Storage**: `File Upload → AtmosStorage → R2 Bucket → File URL`
+- **Authentication**: `Login Request → AtmosAuth → JWT Token → Protected Routes`
 
 ### Core Services:
 * **D1 (Relational Store)**: Handled by `AtmosDB`. Provides blazing-fast edge CRUD operations without leaving the worker environment.
