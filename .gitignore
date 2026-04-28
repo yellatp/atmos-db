@@ -10,7 +10,6 @@ lib
 # Internal Project Context
 Project.md
 HANDOVER.md
-CLAUDE.md
 
 # Cloudflare Wrangler
 .wrangler

@@ -5,41 +5,11 @@
 
 **AtmosDB** is a unified SDK-driven backend framework designed exclusively for Cloudflare Workers. It abstracts Cloudflare D1 (SQL), Vectorize (semantic search), and R2 (storage) into a single, developer-friendly interface, bringing the "Supabase" experience strictly to the Edge.
 
-## Architecture & Services Flow
+## Architecture Overview
 
-AtmosDB follows a layered architecture design, providing a unified interface to Cloudflare's edge services through a clean, modular SDK structure.
+AtmosDB follows a clean layered architecture that unifies Cloudflare's edge services (D1, Vectorize, R2, Workers AI) into a single TypeScript SDK. See [detailed architecture documentation](docs/architecture.md) for complete diagrams and data flow patterns.
 
-```mermaid
-graph TB
-    A[Your Application<br/>Hono Routes] --> B[Atmos SDK<br/>Unified API]
-    B --> C[AtmosDB<br/>D1 Interface]
-    B --> D[AtmosVector<br/>Vectorize Interface]
-    B --> E[AtmosStorage<br/>R2 Interface]
-    B --> F[AtmosAuth<br/>Authentication]
-    B --> G[AtmosEmbedder<br/>AI Processing]
-
-    C --> H[(D1 Database<br/>SQLite)]
-    D --> I[[Vectorize<br/>HNSW Index]]
-    E --> J{R2 Storage<br/>S3-compatible}
-    G --> K[/Workers AI<br/>Transformers/]
-
-    G -.-> D
-```
-
-### Architecture Layers
-
-| Layer | Purpose | Components |
-|-------|---------|------------|
-| **Application Layer** | Your app logic | Hono routes, business logic |
-| **SDK Core Layer** | Unified interfaces | AtmosDB, AtmosVector, AtmosStorage, AtmosAuth, AtmosEmbedder |
-| **Service Layer** | Cloudflare services | D1 Database, Vectorize, R2 Storage, Workers AI |
-
-### Data Flow Patterns
-
-- **CRUD Operations**: `HTTP Request → AtmosDB → D1 Database → Response`
-- **Semantic Search**: `Text Input → AtmosEmbedder → Workers AI → Vectorize → Results`
-- **File Storage**: `File Upload → AtmosStorage → R2 Bucket → File URL`
-- **Authentication**: `Login Request → AtmosAuth → JWT Token → Protected Routes`
+![AtmosDB Architecture](docs/AtmosDB.svg)
 
 ### Core Services:
 * **D1 (Relational Store)**: Handled by `AtmosDB`. Provides blazing-fast edge CRUD operations without leaving the worker environment.
