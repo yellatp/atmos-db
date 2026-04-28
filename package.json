@@ -1,0 +1,46 @@
+{
+  "name": "atmos-sdk",
+  "version": "0.1.0",
+  "description": "Unified SDK for Cloudflare D1, Vectorize, and R2",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "wrangler dev",
+    "test": "vitest run",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "publish:dry": "npm publish --dry-run"
+  },
+  "keywords": [
+    "cloudflare",
+    "workers",
+    "d1",
+    "vectorize",
+    "r2",
+    "edge",
+    "sdk"
+  ],
+  "author": "Pavan Yellathakota <pavan.yellathakota.ds@gmail.com>",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "hono": "^4.12.15",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260426.1",
+    "@typescript-eslint/eslint-plugin": "^8.59.0",
+    "@typescript-eslint/parser": "^8.59.0",
+    "eslint": "^10.2.1",
+    "prettier": "^3.8.3",
+    "rimraf": "^6.1.3",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.5",
+    "wrangler": "^4.85.0"
+  }
+}
