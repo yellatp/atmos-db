@@ -11,64 +11,19 @@ AtmosDB follows a layered architecture design, providing a unified interface to 
 
 ```mermaid
 graph TB
-    %% Application Layer
-    subgraph "Application Layer"
-        direction LR
-        App[Your Application<br/>Hono Routes]
-        SDK[Atmos SDK<br/>Unified API]
-    end
+    A[Your Application<br/>Hono Routes] --> B[Atmos SDK<br/>Unified API]
+    B --> C[AtmosDB<br/>D1 Interface]
+    B --> D[AtmosVector<br/>Vectorize Interface]
+    B --> E[AtmosStorage<br/>R2 Interface]
+    B --> F[AtmosAuth<br/>Authentication]
+    B --> G[AtmosEmbedder<br/>AI Processing]
 
-    %% SDK Core Layer
-    subgraph "Atmos SDK Core"
-        direction TB
-        Core[AtmosCore<br/>Main Engine]
-        Components[SDK Components]
+    C --> H[(D1 Database<br/>SQLite)]
+    D --> I[[Vectorize<br/>HNSW Index]]
+    E --> J{R2 Storage<br/>S3-compatible}
+    G --> K[/Workers AI<br/>Transformers/]
 
-        Components --> DB[AtmosDB<br/>D1 Interface]
-        Components --> Vector[AtmosVector<br/>Vectorize Interface]
-        Components --> Storage[AtmosStorage<br/>R2 Interface]
-        Components --> Auth[AtmosAuth<br/>Authentication]
-        Components --> Embedder[AtmosEmbedder<br/>AI Processing]
-    end
-
-    %% Service Layer
-    subgraph "Cloudflare Edge Services"
-        direction LR
-        D1[(D1 Database<br/>SQLite)]
-        Vec[[Vectorize<br/>HNSW Index]]
-        R2{R2 Storage<br/>S3-compatible}
-        AI[/Workers AI<br/>Transformers/]
-    end
-
-    %% Data Flow
-    App -->|HTTP Requests| SDK
-    SDK -->|Unified API Calls| Core
-    Core -->|SQL Queries| DB
-    Core -->|Vector Operations| Vector
-    Core -->|File Operations| Storage
-    Core -->|Auth Operations| Auth
-    Core -->|Embeddings| Embedder
-
-    DB -->|Data| D1
-    Vector -->|Vectors| Vec
-    Storage -->|Files| R2
-    Embedder -->|AI Processing| AI
-
-    %% Auto-embedding flow
-    Embedder -.->|Auto-embed| Vector
-
-    %% Styling
-    style App fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
-    style SDK fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-    style Core fill:#fff3e0,stroke:#f57c00,stroke-width:3px
-    style Components fill:#e8f5e8,stroke:#2e7d32
-    style D1 fill:#e3f2fd,stroke:#1976d2
-    style Vec fill:#f3e5f5,stroke:#7b1fa2
-    style R2 fill:#fff3e0,stroke:#f57c00
-    style AI fill:#e8f5e8,stroke:#2e7d32
-
-    classDef serviceLabel font-family:Arial,font-size:11px,text-align:center
-    class DB,Vector,Storage,Auth,Embedder serviceLabel
+    G -.-> D
 ```
 
 ### Architecture Layers
