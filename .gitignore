@@ -23,6 +23,7 @@ wrangler.toml
 .env.*.local
 .env.production
 .env.staging
+.npmrc
 
 # Logs
 npm-debug.log*

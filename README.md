@@ -1,6 +1,6 @@
 # AtmosDB — Supabase for the Edge
 
-[![npm version](https://badge.fury.io/js/atmos-sdk.svg)](https://badge.fury.io/js/atmos-sdk)
+[![npm version](https://img.shields.io/npm/v/atmos-sdk.svg)](https://www.npmjs.com/package/atmos-sdk)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 **AtmosDB** is a unified SDK-driven backend framework designed exclusively for Cloudflare Workers. It abstracts Cloudflare D1 (SQL), Vectorize (semantic search), and R2 (storage) into a single, developer-friendly interface, bringing the "Supabase" experience strictly to the Edge.
@@ -9,7 +9,7 @@
 
 AtmosDB follows a clean layered architecture that unifies Cloudflare's edge services (D1, Vectorize, R2, Workers AI) into a single TypeScript SDK. See [detailed architecture documentation](docs/architecture.md) for complete diagrams and data flow patterns.
 
-![AtmosDB Architecture](docs/AtmosDB.svg)
+![AtmosDB Architecture](https://raw.githubusercontent.com/yellatp/atmos-db/master/docs/AtmosDB.svg)
 
 ### Core Services:
 * **D1 (Relational Store)**: Handled by `AtmosDB`. Provides blazing-fast edge CRUD operations without leaving the worker environment.

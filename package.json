@@ -1,6 +1,6 @@
 {
   "name": "atmos-sdk",
-  "version": "0.1.0",
+  "version": "0.1.4",
   "description": "Unified SDK for Cloudflare D1, Vectorize, and R2",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -22,7 +22,6 @@
     "node": ">=18.0.0"
   },
   "publishConfig": {
-    "provenance": true,
     "access": "public"
   },
   "scripts": {

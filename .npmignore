@@ -32,6 +32,7 @@ coverage
 # Runtime / OS junk
 .env
 .env.*
+.npmrc
 *.log
 .DS_Store
 Thumbs.db
