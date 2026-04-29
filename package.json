@@ -2,12 +2,29 @@
   "name": "atmos-sdk",
   "version": "0.1.0",
   "description": "Unified SDK for Cloudflare D1, Vectorize, and R2",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "provenance": true,
+    "access": "public"
+  },
   "scripts": {
     "build": "tsup",
     "dev": "wrangler dev",
@@ -27,8 +44,13 @@
   ],
   "author": "Pavan Yellathakota <pavan.yellathakota.ds@gmail.com>",
   "license": "Apache-2.0",
+  "peerDependencies": {
+    "hono": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "hono": { "optional": true }
+  },
   "dependencies": {
-    "hono": "^4.12.15",
     "zod": "^4.3.6"
   },
   "devDependencies": {

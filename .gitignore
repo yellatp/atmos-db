@@ -43,10 +43,13 @@ logs
 Thumbs.db
 *.tmp
 
-# Tests
+# Tests & Local Dev Build Artifacts
 coverage
 .vitest-result.json
 .nyc_output
+examples/*/node_modules
+examples/*/dist
+examples/*/.wrangler
 
 # Runtime data
 pids
